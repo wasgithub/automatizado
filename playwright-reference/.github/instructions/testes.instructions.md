@@ -12,6 +12,9 @@ Ao criar/editar testes ou Page Objects neste repositório:
 - Seletores na ordem: `getByRole` > `getByLabel` > `getByTestId` > texto > CSS
   justificado. Sem `waitForTimeout`, `test.only`, `page.pause()`.
 - Page Object expõe ações/locators; **asserts de negócio ficam no teste**.
+- Seletor centralizado no Page Object (1 lugar por tela); elemento repetido em
+  várias telas → **Component Object** (`src/components/`, ex.: `ConfirmDialog`,
+  `DataTable`). Nunca mapa global de strings de seletor.
 - Massa via `src/factories` (`@faker-js/faker`), única por `runId`.
 - Retorno de API validado com `divergenciasDeContrato(...)` contra o contrato mapeado.
 - Título do teste com a tag do CT (`@CT-xxx`) para rastreabilidade com o `.feature`.

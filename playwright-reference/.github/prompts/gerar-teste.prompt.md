@@ -12,6 +12,10 @@ Entrada (leia ANTES de escrever):
 
 Produza:
 1. Page Object em `src/pages/${input:feature}/` (só seletores do exploratório).
+   Centralize os locators no Page Object — o teste nunca usa seletor cru. Se um
+   elemento se repetir em outras telas, extraia um **Component Object** em
+   `src/components/` (ex.: `ConfirmDialog`, `DataTable`) em vez de duplicar.
+   Nunca criar mapa global de strings de seletor.
 2. Spec em `tests/functional/${input:feature}/` com o título contendo a tag `@CT-xxx`,
    mapeando Dado/Quando/Então → arrange/act/assert e chamando `evidencia.passo(...)`.
 3. Retorno de API validado com `divergenciasDeContrato(...)`.

@@ -36,6 +36,8 @@ Use `rec.exigir`/`rec.avancar`/`rec.bloqueio` de `scripts/record-journey.cjs`.
   (`docs/SELECTOR_CONTRACT.md`).
 - Page Object = ações/locators; **asserts de negócio no teste**. Massa via
   `src/factories` (usa `@faker-js/faker`). Sem esperas fixas (auto-waiting).
+- Seletor centralizado no Page Object (1 lugar/tela); elemento repetido em várias
+  telas → **Component Object** (`src/components/`). Nunca mapa global de strings.
 - Organização por **domínio → feature**; ownership por `CODEOWNERS` — nunca pasta
   por squad/tribo. Rastreabilidade: título do teste com tag `@CT-xxx`.
 

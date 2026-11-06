@@ -29,6 +29,13 @@ Guia prático para escrever testes consistentes neste projeto.
 6. **Segurança.** Nada de PII/segredos em logs; conta real somente
    leitura/navegação até autorização ([AUTHENTICATION.md](AUTHENTICATION.md)).
 
+## Centralização de seletores
+
+- Seletor mora no **Page Object** (1 lugar por tela); teste chama a função.
+- Elemento repetido em várias telas → **Component Object** (ex.: `ConfirmDialog`,
+  `DataTable`), reutilizado — muda num ponto só.
+- **Não** criar mapa global de strings de seletor. Ver `docs/SELECTOR_CONTRACT.md`.
+
 ## Tags
 
 Mesma fonte de testes, selecionada por tag no título — **sem duplicar specs**:
