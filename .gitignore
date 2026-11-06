@@ -1,0 +1,19 @@
+# Dependências
+**/node_modules/
+
+# Segredos e sessões — NUNCA versionar
+**/.env
+**/.env.*
+!**/.env.example
+**/playwright/.auth/
+
+# Artefatos de teste (podem conter PII)
+**/playwright-report/
+**/test-results/
+**/blob-report/
+**/evidencias/
+
+# SO / logs
+.DS_Store
+**/.DS_Store
+*.log

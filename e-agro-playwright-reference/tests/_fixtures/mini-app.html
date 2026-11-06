@@ -1,0 +1,25 @@
+<!-- Mini-app FICTÍCIO para teste de mesa do fluxo (NÃO é tela real do e-Agro).
+     Fonte única usada tanto pelo exploratório (servido localmente) quanto pelo
+     teste (via setContent). Demonstra o contrato de seletores: label/for+id,
+     role=button, data-testid, role=status. -->
+<main>
+  <h1>Cadastro de Produtor</h1>
+  <form aria-label="Cadastro de Produtor">
+    <label for="nome">Nome do produtor</label>
+    <input id="nome" name="nome" />
+
+    <label for="documento">CPF</label>
+    <input id="documento" name="documento" />
+
+    <button type="button" data-testid="cadastrar-produtor">Cadastrar</button>
+  </form>
+  <p id="status" role="status"></p>
+  <script>
+    document.querySelector('[data-testid=cadastrar-produtor]').addEventListener('click', function () {
+      var nome = document.getElementById('nome').value;
+      var doc = document.getElementById('documento').value;
+      document.getElementById('status').textContent =
+        nome && doc ? 'Produtor cadastrado com sucesso' : 'Preencha nome e CPF';
+    });
+  </script>
+</main>
