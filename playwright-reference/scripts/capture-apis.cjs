@@ -44,8 +44,9 @@ function schema(v, depth = 0) {
 
 (async () => {
   const base = process.env.BASE_URL;
+  if (!base) throw new Error('Defina BASE_URL no .env (ambiente alvo).');
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+  const context = await browser.newContext(require('node:fs').existsSync('playwright/.auth/user.json') ? { storageState: 'playwright/.auth/user.json' } : {});
   const page = await context.newPage();
 
   const endpoints = new Map(); // chave: host+path+operação

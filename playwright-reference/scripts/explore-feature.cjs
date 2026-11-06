@@ -34,13 +34,14 @@ function hostPermitido(hostname, base) {
 
 (async () => {
   const base = process.env.BASE_URL;
+  if (!base) throw new Error('Defina BASE_URL no .env (ambiente alvo).');
   const seed = process.argv[2];
   const maxDepth = Number(process.argv[3] ?? 1);
   if (!seed) throw new Error('Informe a rota inicial. Ex: node scripts/explore-feature.cjs /area 1');
   const prefix = '/' + seed.replace(/^\//, '').split('/')[0];
 
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+  const context = await browser.newContext(require('node:fs').existsSync('playwright/.auth/user.json') ? { storageState: 'playwright/.auth/user.json' } : {});
 
   const apisPorRota = {};
   const paginas = [];

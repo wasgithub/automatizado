@@ -11,7 +11,7 @@ const pathOnly = (href, base) => { try { return new URL(href, base).pathname; } 
   const base = process.env.BASE_URL;
   const path = process.argv[2] || '/';
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+  const context = await browser.newContext(require('node:fs').existsSync('playwright/.auth/user.json') ? { storageState: 'playwright/.auth/user.json' } : {});
   const page = await context.newPage();
   try {
     await page.goto(new URL(path, base).toString(), { waitUntil: 'domcontentloaded', timeout: 45_000 });

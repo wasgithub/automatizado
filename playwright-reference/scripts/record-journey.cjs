@@ -47,6 +47,7 @@ function hostPermitido(hostname, base) {
 
 (async () => {
   const base = process.env.BASE_URL;
+  if (!base) throw new Error('Defina BASE_URL no .env (ambiente alvo).');
   const entry = process.argv[2] || '/';
   const nome = process.argv[3] || 'jornada';
   const runId = 'synthetic-' + randomUUID().slice(0, 8);
@@ -57,7 +58,7 @@ function hostPermitido(hostname, base) {
   if (APP_ENV !== 'homolog') console.log('⚠️  APP_ENV != homolog → passos de criação serão BLOQUEADOS por guardHomolog().');
 
   const browser = await chromium.launch({ headless: true });
-  const context = await browser.newContext({ storageState: 'playwright/.auth/user.json' });
+  const context = await browser.newContext(require('node:fs').existsSync('playwright/.auth/user.json') ? { storageState: 'playwright/.auth/user.json' } : {});
   const page = await context.newPage();
 
   const apis = new Map();

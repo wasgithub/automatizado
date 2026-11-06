@@ -7,7 +7,8 @@ Faça o exploratório da rota **${input:rota}**, seguindo `docs/GUARDRAILS.md` e
 seção de exploratório. Escolha a abordagem:
 
 **A) Descoberta de navegação** (mapear rotas/telas, sem criar dados):
-1. Garanta sessão (`playwright/.auth/user.json`) ou use `/auth`.
+1. Defina `BASE_URL` no `.env` (obrigatório). Sessão é **opcional**: páginas
+   públicas não exigem; para áreas autenticadas, gere a sessão com `/auth`.
 2. Rode `npm run explore -- ${input:rota} 1` e, se útil, `node scripts/capture-apis.cjs`.
 3. Salve a saída (PII-safe) em `docs/EXPLORATORIO_${input:feature}.md`.
 
