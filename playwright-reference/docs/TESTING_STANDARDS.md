@@ -49,9 +49,9 @@ A fixture `evidencia` gera prints por passo, para anexar no CT/sign-off:
 
 ```ts
 test('... @CT-123', async ({ page, evidencia }) => {
-  await cprPage.openDashboard();
-  await evidencia.passo('dashboard carregado');   // print 01
-  await cprPage.algo();
+  await page.goto('/area');
+  await evidencia.passo('tela inicial');          // print 01
+  await page.getByRole('button', { name: 'Confirmar' }).click();
   await evidencia.passo('apos acao');             // print 02
 });
 ```

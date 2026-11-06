@@ -23,8 +23,8 @@ para **utilizar os serviços de crédito**.
 
 | CT | Cenário (.feature) | Teste automatizado | Status |
 |----|--------------------|--------------------|--------|
-| CT-001 | "Exibir o formulário de login" | `tests/functional/cpr/login/login.spec.ts` → "exibe o formulário de login do SSO" | ✅ (baseline prod) |
-| CT-002 | "Solicitar verificação em duas etapas" | `login.spec.ts` → "login completo (2FA)" | ⏭️ skip (2FA interativo) |
+| CT-001 | "Exibir o formulário de login" | `tests/functional/cpr/login/login.spec.ts` → "exibe o formulário de login do SSO" | 🧩 template (habilita com `RUN_LOGIN_EXAMPLE`+`BASE_URL`) |
+| CT-002 | "Solicitar verificação em duas etapas" | — | ⏳ a automatizar (depende do ambiente/2FA) |
 
 ## Notas do exploratório
 - SSO Keycloak (`/auth/realms/...`); campos `input[name=username]` / `input[name=password]`; botão "Entrar".

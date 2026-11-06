@@ -73,11 +73,12 @@ Para jornadas de **criação** (cliente/imóvel/pedido), use **exploração guia
 
 Ver `docs/TESTING_STANDARDS.md`, `docs/TEST_DATA_STRATEGY.md` e `docs/STRUCTURE.md`.
 
-## 6. Specs de exemplo (baseline de produção)
+## 6. Specs de exemplo (templates)
 
-Os specs em `tests/functional/**` marcados como *baseline de produção* só rodam
-com `APP_ENV=prod` (foram mapeados em produção). Em homolog eles **auto-ignoram**
-e servem de **template** para recriar com os dados reais do ambiente. Os testes
+Os specs em `tests/functional/**` são **templates** com rotas/seletores
+placeholders. Só executam quando apontados para um ambiente (ex.: o de login
+exige `RUN_LOGIN_EXAMPLE=1` + `BASE_URL`); sem isso **auto-ignoram**. Use-os como
+base e recrie com os dados reais do ambiente (vindos do exploratório). Os testes
 `tests/local/**` rodam sempre (não dependem do sistema).
 
 ## 7. Isolamento em ambiente compartilhado

@@ -29,8 +29,9 @@
   reutilizável por outros projetos do workspace.
 - **ADR-012:** Três projetos Playwright: `local` (sem rede/auth, roda sempre),
   `setup` (provisiona sessão) e `chromium` (funcionais, depende do setup). Specs
-  mapeados em produção ficam atrás de `APP_ENV=prod` como templates; o default
-  (homolog) mantém a suíte verde sem credenciais.
+  funcionais são **templates** que só rodam quando apontados para um ambiente
+  (ex.: `RUN_LOGIN_EXAMPLE` + `BASE_URL`); o default mantém a suíte verde (só
+  `tests/local`) sem credenciais.
 - **ADR-013:** Gherkin é **documental** (artefatos em `features/`), não
   executável. Vínculo com a automação por **rastreabilidade** (tag `@CT-...` +
   tabela na `historia.md`). Sem `@cucumber/cucumber`/`playwright-bdd` por ora —
