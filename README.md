@@ -2,4 +2,4 @@
 
 Workspace de automação de testes.
 
-- [`e-agro-playwright-reference/`](e-agro-playwright-reference/) — projeto de referência Playwright + TypeScript (e-Agro).
+- [`playwright-reference/`](playwright-reference/) — projeto de referência Playwright + TypeScript.
