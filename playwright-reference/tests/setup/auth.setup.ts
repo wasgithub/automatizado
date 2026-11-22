@@ -17,7 +17,7 @@
 import { existsSync } from 'node:fs';
 import { test as setup } from '@playwright/test';
 import { getAuthMode, getCredenciais } from '../../src/config/env';
-import { autenticar } from '../../src/auth/login';
+import { getAuthStrategy } from '../../src/auth';
 
 const STORAGE_STATE = 'playwright/.auth/user.json';
 
@@ -31,9 +31,9 @@ setup('provisionar sessão de autenticação', async ({ page }) => {
     return; // sessão já existe → reutilizada pelos testes
   }
 
-  // AUTH_MODE=automated — exige credenciais do ambiente.
+  // AUTH_MODE=automated — usa a estratégia selecionada por AUTH_STRATEGY.
   const creds = getCredenciais();
   await page.goto('/');
-  await autenticar(page, creds);
+  await getAuthStrategy().login(page, creds);
   await page.context().storageState({ path: STORAGE_STATE });
 });

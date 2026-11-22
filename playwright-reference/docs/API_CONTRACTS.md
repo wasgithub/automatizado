@@ -10,6 +10,14 @@ documentados por ambiente — **não** ficam versionados neste projeto de refer�
    (nomes de campos + tipos), com **valores redigidos** (PII-safe).
 2. Registre o resultado em `docs/EXPLORATORIO_<feature>.md` do ambiente alvo.
 
+## REST ou GraphQL
+
+O `BaseApiClient` suporta os dois:
+- **REST**: `getJson`, `postJson`, `putJson`, `deleteOk`.
+- **GraphQL (BFF)**: `graphql(operationName, query, variables)`.
+
+Escolha conforme o backend do ambiente alvo (nenhum é obrigatório).
+
 ## Backends GraphQL (BFF)
 Se o backend for um BFF GraphQL (endpoint único, operação por `operationName`):
 - A operação costuma vir no corpo (`operationName`) e às vezes na query string.
