@@ -1,55 +1,50 @@
 /**
  * Gera uma COLEÇÃO POSTMAN (v2.1) a partir do mapa de APIs capturado
- * (`test-results/api-capture.json`, produzido por capture-apis.cjs).
+ * (`test-results/api-capture.json`), ESTRUTURADA POR SISTEMA.
  *
- * Objetivo: documentar as APIs e distribuir ao time um arquivo importável no
- * Postman — sem dependências externas (Collection v2.1 é só JSON).
+ * Multi-sistema: cada sistema vira uma pasta, com subpastas GraphQL/REST e sua
+ * própria variável de base (`{{baseUrl_<sistema>}}`). Assim um fluxo que
+ * atravessa vários sistemas fica navegável e importável no Postman.
  *
- * SEGURANÇA / PII:
- * - NÃO inclui valores reais, tokens nem cookies. Variáveis GraphQL viram
- *   PLACEHOLDERS (`"<preencher>"`). A URL base vira a variável `{{baseUrl}}`.
- * - A autenticação fica a cargo de quem importar (configure no Postman).
+ * SEGURANÇA / PII: sem valores reais, tokens ou cookies. Variáveis GraphQL viram
+ * placeholders (`"<preencher>"`). Autenticação é configurada por quem importa.
  *
- * Uso:
- *   node scripts/capture-apis.cjs           # gera test-results/api-capture.json
- *   node scripts/export-postman.cjs [saida] # gera a coleção (default: test-results/postman-collection.json)
+ * Uso: node scripts/export-postman.cjs [saida]
  */
 const fs = require('node:fs');
+const { loadSystems } = require('./lib/systems.cjs');
 
 const ENTRADA = 'test-results/api-capture.json';
 const SAIDA = process.argv[2] || 'test-results/postman-collection.json';
 
 if (!fs.existsSync(ENTRADA)) {
-  console.error(`❌ ${ENTRADA} não encontrado. Rode antes: node scripts/capture-apis.cjs`);
+  console.error(`❌ ${ENTRADA} não encontrado. Rode antes: npm run capture:apis`);
   process.exit(1);
 }
 
-const { baseUrl, operacoes } = JSON.parse(fs.readFileSync(ENTRADA, 'utf8'));
-const host = (() => { try { return new URL(baseUrl).host; } catch { return 'api'; } })();
+const { operacoes } = JSON.parse(fs.readFileSync(ENTRADA, 'utf8'));
+const reg = loadSystems();
+const varBase = (sistema) => `baseUrl_${String(sistema).replace(/[^a-zA-Z0-9]+/g, '_')}`;
 
-// Monta o body GraphQL com variáveis como placeholders (nunca valores reais).
 function graphqlBody(op) {
   const variables = {};
   for (const nome of op.variableNames || []) variables[nome] = '<preencher>';
-  return {
-    mode: 'graphql',
-    graphql: { query: op.query || `# query ${op.operation} (capturar do app)`, variables: JSON.stringify(variables, null, 2) },
-  };
+  return { mode: 'graphql', graphql: { query: op.query || `# query ${op.operation}`, variables: JSON.stringify(variables, null, 2) } };
 }
 
 function item(op) {
   const isGql = op.tipo === 'graphql';
+  const bv = `{{${varBase(op.sistema)}}}`;
   const nome = isGql ? op.operation : `${op.method} ${op.path}`;
   const url = isGql
-    ? { raw: `{{baseUrl}}/graphql`, host: ['{{baseUrl}}'], path: ['graphql'] }
-    : { raw: `{{baseUrl}}${op.path}`, host: ['{{baseUrl}}'], path: op.path.split('/').filter(Boolean) };
-
+    ? { raw: `${bv}/graphql`, host: [bv], path: ['graphql'] }
+    : { raw: `${bv}${op.path}`, host: [bv], path: op.path.split('/').filter(Boolean) };
   const request = {
     method: isGql ? 'POST' : op.method,
     header: [{ key: 'Content-Type', value: 'application/json' }],
     url,
     description:
-      `Status observado: ${op.status}\n` +
+      `Sistema: ${op.sistema}\nStatus observado: ${op.status}\n` +
       (op.variableNames?.length ? `Variáveis: ${op.variableNames.join(', ')}\n` : '') +
       `Resposta (forma): ${JSON.stringify(op.responseSchema)}`,
   };
@@ -57,24 +52,36 @@ function item(op) {
   return { name: nome, request, response: [] };
 }
 
-// Agrupa em pastas: GraphQL e REST.
-const gql = operacoes.filter((o) => o.tipo === 'graphql').map(item);
-const rest = operacoes.filter((o) => o.tipo === 'rest').map(item);
-const folders = [];
-if (gql.length) folders.push({ name: 'GraphQL', item: gql });
-if (rest.length) folders.push({ name: 'REST', item: rest });
+// Agrupa por sistema → (GraphQL / REST).
+const porSistema = {};
+for (const op of operacoes) (porSistema[op.sistema] ||= []).push(op);
+
+const pastasSistema = Object.entries(porSistema).sort().map(([sistema, ops]) => {
+  const sub = [];
+  const gql = ops.filter((o) => o.tipo === 'graphql').map(item);
+  const rest = ops.filter((o) => o.tipo === 'rest').map(item);
+  if (gql.length) sub.push({ name: 'GraphQL', item: gql });
+  if (rest.length) sub.push({ name: 'REST', item: rest });
+  return { name: sistema, item: sub };
+});
+
+// Variáveis: uma base por sistema (usa a URL do systems.config se houver).
+const variaveis = Object.keys(porSistema).sort().map((sistema) => {
+  const cfg = reg.systems[sistema] || {};
+  return { key: varBase(sistema), value: cfg.baseUrl || 'https://<preencher>', type: 'string' };
+});
 
 const collection = {
   info: {
-    name: `API ${host}`,
+    name: 'APIs — coleção por sistema',
     schema: 'https://schema.getpostman.com/json/collection/v2.1.0/collection.json',
-    description: 'Coleção gerada automaticamente a partir do exploratório (PII-safe). Configure autenticação e a variável baseUrl no Postman.',
+    description: 'Gerada automaticamente pelo exploratório (PII-safe). Estruturada por sistema. Configure {{baseUrl_<sistema>}} e a autenticação no Postman.',
   },
-  item: folders,
-  variable: [{ key: 'baseUrl', value: baseUrl, type: 'string' }],
+  item: pastasSistema,
+  variable: variaveis,
 };
 
 fs.writeFileSync(SAIDA, JSON.stringify(collection, null, 2));
-console.log(`✅ Coleção Postman gerada: ${SAIDA}`);
-console.log(`   ${gql.length} operações GraphQL · ${rest.length} endpoints REST · baseUrl=${baseUrl}`);
-console.log('   Importe no Postman: File → Import. Configure a variável {{baseUrl}} e a autenticação.');
+const totalOps = operacoes.length;
+console.log(`✅ Coleção Postman atualizada: ${SAIDA}`);
+console.log(`   ${pastasSistema.length} sistema(s) · ${totalOps} operação(ões) · importe no Postman (File → Import).`);

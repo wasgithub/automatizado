@@ -48,6 +48,8 @@ npm run trace            # abre o Trace Viewer
 Leia antes de implementar fluxos reais:
 
 - [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — **do zero ao primeiro teste** (checklist)
+- [`docs/MULTI_SYSTEM.md`](docs/MULTI_SYSTEM.md) — **fluxos entre sistemas** (e-agro → servicenow → …)
+- [`docs/DOCUMENTACAO_E_POSTMAN.md`](docs/DOCUMENTACAO_E_POSTMAN.md) — documentar APIs + coleção Postman
 - [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — regras do repo (Copilot)
 - [`docs/GUARDRAILS.md`](docs/GUARDRAILS.md) — regras duras + política de dependências
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura técnica

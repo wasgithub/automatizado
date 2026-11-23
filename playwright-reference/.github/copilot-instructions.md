@@ -40,6 +40,10 @@ Use `rec.exigir`/`rec.avancar`/`rec.bloqueio` de `scripts/record-journey.cjs`.
   telas → **Component Object** (`src/components/`). Nunca mapa global de strings.
 - Organização por **domínio → feature**; ownership por `CODEOWNERS` — nunca pasta
   por squad/tribo. Rastreabilidade: título do teste com tag `@CT-xxx`.
+- **Multi-sistema:** um fluxo pode atravessar vários sistemas (e-agro, servicenow...).
+  Configure em `systems.config.json`; seletores isolados em `src/systems/<sistema>/pages/`;
+  jornada cross-system em `tests/flows/<fluxo>/`. Gere pastas com `npm run scaffold`.
+  Ver `docs/MULTI_SYSTEM.md`.
 
 ## Processo de trabalho
 - Audite a estrutura existente e proponha a mudança antes de alterar.

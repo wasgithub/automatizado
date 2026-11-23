@@ -8,6 +8,7 @@
   "scripts": {
     "test": "playwright test",
     "doctor": "node scripts/preflight.cjs",
+    "scaffold": "node scripts/scaffold.cjs",
     "auth:login": "node scripts/auth-login.cjs",
     "explore": "node scripts/explore-feature.cjs",
     "capture:apis": "node scripts/capture-apis.cjs",
