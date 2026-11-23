@@ -47,6 +47,7 @@ npm run trace            # abre o Trace Viewer
 
 Leia antes de implementar fluxos reais:
 
+- [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — **do zero ao primeiro teste** (checklist)
 - [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — regras do repo (Copilot)
 - [`docs/GUARDRAILS.md`](docs/GUARDRAILS.md) — regras duras + política de dependências
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura técnica
