@@ -53,7 +53,9 @@ Use `rec.exigir`/`rec.avancar`/`rec.bloqueio` de `scripts/record-journey.cjs`.
 - Preserve a arquitetura por domínio (`cpr`, `cpr-dollar`, `account`, ...). Não duplicar specs na regressão — usar tags.
 
 ## Comandos (prompt files em `.github/prompts/`)
-`/eagro` (fluxo), `/auth`, `/nova-feature`, `/explorar`, `/gerar-teste`, `/evidencias`.
+Fluxo ao entrar no sistema: `/doctor` → `/auth` → `/scaffold` → `/explorar` →
+`/nova-feature` → `/gerar-teste` → `/evidencias` → `/postman`. `/eagro` = índice.
+Descrição completa em `docs/COMMANDS.md`.
 
 Leia também: `docs/TESTING_STANDARDS.md`, `docs/TEST_DATA_STRATEGY.md`,
 `docs/AUTHENTICATION.md`, `docs/ONBOARDING_HOMOLOG.md`, `docs/STRUCTURE.md`.

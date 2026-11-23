@@ -1,18 +1,26 @@
 ---
 mode: ask
-description: Explica o fluxo de automação do sistema e os comandos disponíveis
+description: Índice do fluxo de automação e todos os slash commands
 ---
 
-Explique, de forma objetiva, o fluxo de automação deste projeto:
+Apresente o **fluxo completo** de automação deste projeto e os comandos para
+executá-lo. Seja conciso; não execute nada — apenas oriente.
 
-1. Os 4 passos: **história + Gherkin → exploratório → teste → evidência**.
-2. Os comandos (prompt files) disponíveis, com um exemplo de cada:
-   - `/auth` — provisiona a sessão (2FA interativo ou automático em homolog).
-   - `/nova-feature` — cria a estrutura de uma feature.
-   - `/explorar` — exploratório (navegação read-only ou jornada de criação em homolog).
-   - `/gerar-teste` — gera o spec a partir do exploratório + Gherkin.
-   - `/evidencias` — roda com evidência por passo (EVIDENCE=1).
-3. Aponte os docs: `docs/GUARDRAILS.md`, `docs/TESTING_STANDARDS.md`,
-   `docs/ONBOARDING_HOMOLOG.md`, `features/README.md`.
+## Fluxo (ao entrar no sistema, nesta ordem)
+1. `/doctor` — verifica prontidão (.env, credenciais, sessão, browser, rede).
+2. `/auth` — provisiona a sessão (2FA interativo ou login automático).
+3. `/scaffold` — cria as pastas do sistema/feature/fluxo (multi-sistema).
+4. `/explorar` — mapeia telas/campos/APIs; atualiza a coleção Postman.
+5. `/nova-feature` — cria história + Gherkin (CTs) da feature.
+6. `/gerar-teste` — gera Page Object + spec a partir do exploratório + Gherkin.
+7. `/evidencias` — roda com evidência passo a passo (EVIDENCE=1).
+8. `/postman` — captura APIs e gera a coleção Postman por sistema.
 
-Seja conciso. Não execute nada — apenas oriente.
+## Princípios (guardrails)
+- Nunca inventar seletor/rota/endpoint — só o que o exploratório mapeou.
+- Multi-sistema: cada sistema tem pastas/seletores próprios (`src/systems/<sistema>/`);
+  fluxo cross-system em `tests/flows/<fluxo>/`.
+- Mutação só em `APP_ENV=homolog`; sem PII/segredos; `npm run check` antes de concluir.
+
+Docs: `docs/COMMANDS.md` (comandos), `docs/QUICKSTART.md`, `docs/MULTI_SYSTEM.md`,
+`docs/GUARDRAILS.md`, `docs/DOCUMENTACAO_E_POSTMAN.md`.
