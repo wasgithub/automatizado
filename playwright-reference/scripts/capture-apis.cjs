@@ -70,6 +70,8 @@ function schema(v, depth = 0) {
         : null;
       // Nomes de variáveis apenas — NUNCA os valores.
       const variableNames = post && post.variables ? Object.keys(post.variables) : [];
+      // Texto da query GraphQL (forma, não dados) — útil para a coleção Postman.
+      const query = isGraphql && post && typeof post.query === 'string' ? post.query : null;
 
       const key = isGraphql
         ? `${u.hostname}${u.pathname}#${operation}`
@@ -89,6 +91,7 @@ function schema(v, depth = 0) {
           path: u.pathname,
           operation,
           variableNames, // só NOMES, nunca valores
+          query, // texto da query GraphQL (forma), quando houver
           status: res.status(),
           contentType: ct.split(';')[0],
           responseSchema: respSchema,
@@ -115,6 +118,14 @@ function schema(v, depth = 0) {
   const lista = [...endpoints.values()].sort((a, b) =>
     `${a.operation || a.path}`.localeCompare(`${b.operation || b.path}`),
   );
+
+  // Grava o mapa de máquina (consumido por export-postman.cjs). PII-safe:
+  // contém forma/esquema, nomes de variáveis e texto de query — nunca valores.
+  const fs = require('node:fs');
+  fs.mkdirSync('test-results', { recursive: true });
+  fs.writeFileSync('test-results/api-capture.json', JSON.stringify({ baseUrl: base, operacoes: lista }, null, 2));
+  console.log('MAPA_SALVO: test-results/api-capture.json');
+
   console.log('TOTAL_OPERACOES:', lista.length);
   console.log('OPERACOES:', JSON.stringify(lista.map((e) => ({ tipo: e.tipo, operation: e.operation, host: e.host, path: e.path, status: e.status })), null, 2));
   console.log('\n===== ESQUEMAS (valores redigidos) =====');
