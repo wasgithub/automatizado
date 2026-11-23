@@ -26,6 +26,10 @@ seção de exploratório. Escolha a abordagem:
 Regras do exploratório (IMPORTANTE):
 - **Analise TODOS os pontos** da tela em cada passo: botões, inputs, selects (e
   suas opções), combos, radios/checkboxes, links e tabs. Não pule elementos.
+- **Combos carregados por API (lazy):** muitos só disparam a chamada ao abrir/
+  focar/digitar. Use `rec.interacao(descricao, fn)` para INTERAGIR (abrir o
+  combo) e correlacionar a chamada disparada + as opções que surgiram — um crawl
+  passivo não captura esses. Registre a chamada e as opções no exploratório.
 - **Tente chegar até a etapa-alvo do cenário.** Em jornadas multi-etapa, use
   `rec.exigir(...)` antes de agir e `rec.avancar(...)` em cada transição.
 - **Se não conseguir evoluir** (elemento ausente, validação bloqueia, falta

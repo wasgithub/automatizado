@@ -118,6 +118,33 @@ function hostPermitido(hostname, base) {
         await this.bloqueio(`${descricao} — ${String(e.message).split('\n')[0]}`);
       }
     },
+    /**
+     * CORRELAÇÃO combo↔chamada: executa uma interação (abrir combo, focar,
+     * digitar), espera a rede e registra QUAIS chamadas ela disparou e QUAIS
+     * opções surgiram. Essencial para combos carregados por API (lazy).
+     * Uso: await rec.interacao('abrir UF', async () => page.getByLabel('UF').click());
+     */
+    async interacao(descricao, fn) {
+      const antes = new Set(apis.keys());
+      await fn();
+      await page.waitForLoadState('networkidle', { timeout: 10_000 }).catch(() => {});
+      await page.waitForTimeout(600);
+      const novas = [...apis.keys()].filter((k) => !antes.has(k)).map((k) => apis.get(k));
+      // Opções visíveis agora (select, role=option, listbox) — nomes, nunca valores.
+      const opcoes = await page.evaluate(() => {
+        const vis = (el) => { const r = el.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+        const t = (el) => (el.textContent || '').trim().slice(0, 50);
+        const sel = [...document.querySelectorAll('select')].filter(vis).flatMap((s) => [...s.options].map((o) => o.textContent.trim()));
+        const roles = [...document.querySelectorAll('[role=option],li[role=listitem]')].filter(vis).map(t);
+        return [...new Set([...sel, ...roles].filter(Boolean))].slice(0, 40);
+      });
+      seq += 1;
+      await page.screenshot({ path: path.join(dir, `${String(seq).padStart(2, '0')}-${slug(descricao)}.png`), fullPage: true }).catch(() => {});
+      console.log(`\n### INTERAÇÃO ${seq}: ${descricao}`);
+      console.log('  chamadas disparadas:', JSON.stringify(novas.map((n) => ({ operation: n.operation, status: n.status, variaveis: n.variaveis })), null, 2));
+      console.log('  opções carregadas:', JSON.stringify(opcoes));
+      return { chamadas: novas, opcoes };
+    },
   };
 
   try {
@@ -140,6 +167,12 @@ function hostPermitido(hostname, base) {
 // =====================================================================
 async function jornada(page, rec, dados) {
   await rec.passo('entrada');
+
+  // Combo carregado por API (lazy)? Use rec.interacao para abrir e CORRELACIONAR
+  // a chamada disparada + as opções que surgiram:
+  //   await rec.interacao('abrir combo UF', async () => {
+  //     await page.getByLabel(/uf/i).click();
+  //   });
 
   // Exemplo (ajuste aos seletores do exploratório; criação só roda em homolog):
   // rec.guardHomolog('criar registro');
