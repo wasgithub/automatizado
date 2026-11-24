@@ -29,6 +29,12 @@ Preencha por feature com o que o exploratório revelar:
 | (campo) | (tela) | `getByLabel('...')` | pedir `<label for>`/`data-testid` se faltar |
 | (botão) | (tela) | `getByRole('button', { name: '...' })` | — |
 
+## Integração com o frontend (mesmo workspace)
+
+Se o frontend React estiver no workspace, use `npm run scan:frontend -- <src>`
+para mapear seletores prontos e lacunas (candidatos a `data-testid`). Ver
+`docs/CONTRATO_TESTABILIDADE.md`.
+
 ## Centralização de seletores (onde o seletor mora)
 
 O seletor NUNCA fica solto no teste. Centralização em duas camadas:

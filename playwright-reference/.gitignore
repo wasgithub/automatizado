@@ -8,5 +8,6 @@ playwright-report/
 test-results/
 blob-report/
 evidencias/
+docs/FRONTEND_SELECTORS.md
 *.log
 .DS_Store
