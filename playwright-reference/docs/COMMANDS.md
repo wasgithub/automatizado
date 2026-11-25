@@ -18,6 +18,7 @@ então também funciona no terminal, sem a IA.
 | 6 | `/gerar-teste` | gera Page Object + spec (do exploratório + Gherkin) | — |
 | 7 | `/evidencias` | roda com evidência passo a passo | `EVIDENCE=1 npx playwright test` |
 | 8 | `/postman` | captura APIs e gera a coleção Postman por sistema | `npm run capture:apis` |
+| ★ | `/mapear-frontend` | mapeia seletores do frontend React (mesmo workspace) | `npm run scan:frontend -- <src>` |
 | — | `/eagro` | índice: mostra o fluxo e os comandos | — |
 
 ## Detalhe de cada comando
