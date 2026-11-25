@@ -10,6 +10,7 @@ executá-lo. Seja conciso; não execute nada — apenas oriente.
 1. `/doctor` — verifica prontidão (.env, credenciais, sessão, browser, rede).
 2. `/auth` — provisiona a sessão (2FA interativo ou login automático).
 3. `/scaffold` — cria as pastas do sistema/feature/fluxo (multi-sistema).
+3b. `/mapear-frontend` — (se o frontend React está no workspace) mapeia seletores + lacunas.
 4. `/explorar` — mapeia telas/campos/APIs; atualiza a coleção Postman.
 5. `/nova-feature` — cria história + Gherkin (CTs) da feature.
 6. `/gerar-teste` — gera Page Object + spec a partir do exploratório + Gherkin.
