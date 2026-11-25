@@ -12,6 +12,8 @@
  */
 require('dotenv').config();
 const { chromium } = require('@playwright/test');
+const { execFileSync } = require('node:child_process');
+const { systemByHost } = require('./lib/systems.cjs');
 
 // Rotas read-only a visitar (PLACEHOLDERS — ajuste ao ambiente alvo).
 const ROTAS = (process.env.EXPLORE_ROTAS || '/').split(',').map((r) => r.trim());
@@ -70,6 +72,8 @@ function schema(v, depth = 0) {
         : null;
       // Nomes de variáveis apenas — NUNCA os valores.
       const variableNames = post && post.variables ? Object.keys(post.variables) : [];
+      // Texto da query GraphQL (forma, não dados) — útil para a coleção Postman.
+      const query = isGraphql && post && typeof post.query === 'string' ? post.query : null;
 
       const key = isGraphql
         ? `${u.hostname}${u.pathname}#${operation}`
@@ -83,12 +87,14 @@ function schema(v, depth = 0) {
 
       if (!endpoints.has(key)) {
         endpoints.set(key, {
+          sistema: systemByHost(u.hostname) || u.hostname, // agrupa por sistema
           tipo: isGraphql ? 'graphql' : 'rest',
           method,
           host: u.hostname,
           path: u.pathname,
           operation,
           variableNames, // só NOMES, nunca valores
+          query, // texto da query GraphQL (forma), quando houver
           status: res.status(),
           contentType: ct.split(';')[0],
           responseSchema: respSchema,
@@ -112,10 +118,38 @@ function schema(v, depth = 0) {
   await context.close();
   await browser.close();
 
-  const lista = [...endpoints.values()].sort((a, b) =>
-    `${a.operation || a.path}`.localeCompare(`${b.operation || b.path}`),
+  const fs = require('node:fs');
+  const ARQ = 'test-results/api-capture.json';
+  fs.mkdirSync('test-results', { recursive: true });
+
+  // MERGE INCREMENTAL: acumula com capturas anteriores (cada rodada do
+  // exploratório adiciona novas operações ao mesmo mapa). Dedup por chave.
+  const porChave = new Map();
+  if (fs.existsSync(ARQ)) {
+    try {
+      for (const op of JSON.parse(fs.readFileSync(ARQ, 'utf8')).operacoes || []) {
+        porChave.set(`${op.sistema}|${op.tipo}|${op.operation || op.method + ' ' + op.path}`, op);
+      }
+    } catch { /* ignora capture anterior corrompida */ }
+  }
+  for (const op of endpoints.values()) {
+    porChave.set(`${op.sistema}|${op.tipo}|${op.operation || op.method + ' ' + op.path}`, op);
+  }
+  const lista = [...porChave.values()].sort((a, b) =>
+    `${a.sistema}|${a.operation || a.path}`.localeCompare(`${b.sistema}|${b.operation || b.path}`),
   );
-  console.log('TOTAL_OPERACOES:', lista.length);
+
+  // Mapa de máquina (PII-safe: forma/esquema, nomes de variáveis, texto de query).
+  fs.writeFileSync(ARQ, JSON.stringify({ baseUrl: base, operacoes: lista }, null, 2));
+  console.log('MAPA_SALVO:', ARQ, `(${lista.length} operações acumuladas)`);
+
+  // Atualiza a coleção Postman automaticamente — assim ela cresce DURANTE o
+  // exploratório, pronta para importar a qualquer momento.
+  try {
+    execFileSync('node', ['scripts/export-postman.cjs'], { stdio: 'inherit' });
+  } catch { console.log('(export Postman falhou — rode `npm run export:postman` manualmente)'); }
+
+  console.log('TOTAL_OPERACOES (nesta rodada):', endpoints.size);
   console.log('OPERACOES:', JSON.stringify(lista.map((e) => ({ tipo: e.tipo, operation: e.operation, host: e.host, path: e.path, status: e.status })), null, 2));
   console.log('\n===== ESQUEMAS (valores redigidos) =====');
   for (const e of lista) {

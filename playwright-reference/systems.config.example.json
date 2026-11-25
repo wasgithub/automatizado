@@ -1,0 +1,15 @@
+{
+  "_comentario": "Copie para systems.config.json (ignorado pelo Git) e ajuste. Cada sistema tem URL e, opcionalmente, bffUrl e estratégia de login própria. Um fluxo pode atravessar vários sistemas (ex.: e-agro -> servicenow -> e-agro).",
+  "defaultSystem": "e-agro",
+  "systems": {
+    "e-agro": {
+      "baseUrl": "https://app.exemplo.test",
+      "bffUrl": "https://api.exemplo.test",
+      "authStrategy": "keycloak"
+    },
+    "servicenow": {
+      "baseUrl": "https://org.service-now.exemplo.test",
+      "authStrategy": "form"
+    }
+  }
+}

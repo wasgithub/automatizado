@@ -15,6 +15,20 @@ testes reutilizam essa sessão (mais rápido e com menos carga no ambiente).
 - `interactive` (ambientes com 2FA): `npm run auth:login` abre um navegador
   visível; você conclui o 2FA uma vez e a sessão é salva.
 
+## Estratégia plugável (`AUTH_STRATEGY`)
+
+O login é uma **estratégia selecionada por env**, para servir qualquer sistema
+sem mexer em código (`src/auth/`):
+
+- `keycloak` (default) — SSO Keycloak (campos `username`/`password`, 2FA).
+- `form` — formulário próprio; rota em `LOGIN_PATH` (default `/login`), campos por
+  rótulo acessível (`usuário/e-mail`, `senha`).
+- `none` — aplicação pública (sem login).
+
+O `setup` chama `getAuthStrategy().login(page, creds)`. Para adicionar outro
+provedor (ex.: OAuth/SAML), crie uma classe em `src/auth/strategies/` que
+implemente `AuthStrategy` e registre em `src/auth/index.ts`.
+
 ## SSO Keycloak (genérico)
 Quando o ambiente usa Keycloak, os campos padrão valem na maioria dos casos:
 `input[name="username"]`, `input[name="password"]`, botão "Entrar"; a URL do

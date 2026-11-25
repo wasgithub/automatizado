@@ -40,6 +40,10 @@ Use `rec.exigir`/`rec.avancar`/`rec.bloqueio` de `scripts/record-journey.cjs`.
   telas → **Component Object** (`src/components/`). Nunca mapa global de strings.
 - Organização por **domínio → feature**; ownership por `CODEOWNERS` — nunca pasta
   por squad/tribo. Rastreabilidade: título do teste com tag `@CT-xxx`.
+- **Multi-sistema:** um fluxo pode atravessar vários sistemas (e-agro, servicenow...).
+  Configure em `systems.config.json`; seletores isolados em `src/systems/<sistema>/pages/`;
+  jornada cross-system em `tests/flows/<fluxo>/`. Gere pastas com `npm run scaffold`.
+  Ver `docs/MULTI_SYSTEM.md`.
 
 ## Processo de trabalho
 - Audite a estrutura existente e proponha a mudança antes de alterar.
@@ -49,7 +53,9 @@ Use `rec.exigir`/`rec.avancar`/`rec.bloqueio` de `scripts/record-journey.cjs`.
 - Preserve a arquitetura por domínio (`cpr`, `cpr-dollar`, `account`, ...). Não duplicar specs na regressão — usar tags.
 
 ## Comandos (prompt files em `.github/prompts/`)
-`/eagro` (fluxo), `/auth`, `/nova-feature`, `/explorar`, `/gerar-teste`, `/evidencias`.
+Fluxo ao entrar no sistema: `/doctor` → `/auth` → `/scaffold` → `/explorar` →
+`/nova-feature` → `/gerar-teste` → `/evidencias` → `/postman`. `/eagro` = índice.
+Descrição completa em `docs/COMMANDS.md`.
 
 Leia também: `docs/TESTING_STANDARDS.md`, `docs/TEST_DATA_STRATEGY.md`,
 `docs/AUTHENTICATION.md`, `docs/ONBOARDING_HOMOLOG.md`, `docs/STRUCTURE.md`.

@@ -9,8 +9,13 @@ seção de exploratório. Escolha a abordagem:
 **A) Descoberta de navegação** (mapear rotas/telas, sem criar dados):
 1. Defina `BASE_URL` no `.env` (obrigatório). Sessão é **opcional**: páginas
    públicas não exigem; para áreas autenticadas, gere a sessão com `/auth`.
-2. Rode `npm run explore -- ${input:rota} 1` e, se útil, `node scripts/capture-apis.cjs`.
+2. Rode `npm run explore -- ${input:rota} 1`. Para APIs, rode `npm run capture:apis`
+   — ele acumula (merge) e **atualiza a coleção Postman por sistema** a cada
+   rodada (`test-results/postman-collection.json`).
 3. Salve a saída (PII-safe) em `docs/EXPLORATORIO_${input:feature}.md`.
+4. Multi-sistema: se o fluxo tocar outro sistema, garanta-o em
+   `systems.config.json` e crie as pastas com `npm run scaffold` (ver
+   `docs/MULTI_SYSTEM.md`).
 
 **B) Jornada de criação** (criar usuário/pedido/imóvel — fluxo completo):
 1. Confirme `APP_ENV=homolog` (criação é BLOQUEADA em prod).
@@ -21,6 +26,10 @@ seção de exploratório. Escolha a abordagem:
 Regras do exploratório (IMPORTANTE):
 - **Analise TODOS os pontos** da tela em cada passo: botões, inputs, selects (e
   suas opções), combos, radios/checkboxes, links e tabs. Não pule elementos.
+- **Combos carregados por API (lazy):** muitos só disparam a chamada ao abrir/
+  focar/digitar. Use `rec.interacao(descricao, fn)` para INTERAGIR (abrir o
+  combo) e correlacionar a chamada disparada + as opções que surgiram — um crawl
+  passivo não captura esses. Registre a chamada e as opções no exploratório.
 - **Tente chegar até a etapa-alvo do cenário.** Em jornadas multi-etapa, use
   `rec.exigir(...)` antes de agir e `rec.avancar(...)` em cada transição.
 - **Se não conseguir evoluir** (elemento ausente, validação bloqueia, falta

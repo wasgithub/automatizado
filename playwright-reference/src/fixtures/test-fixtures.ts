@@ -18,6 +18,7 @@ import { CprPage } from '../pages/cpr/CprPage';
 import { CprDollarPage } from '../pages/cpr-dollar/CprDollarPage';
 import { CprApiClient } from '../api-clients/CprApiClient';
 import { EvidenceRecorder, featureFromFile, ctFromTitle } from './evidence';
+import { CleanupRegistry } from './cleanup';
 
 interface Fixtures {
   /** ID único desta execução de teste; use como prefixo de dados sintéticos. */
@@ -28,11 +29,19 @@ interface Fixtures {
   cprApi: CprApiClient;
   /** Gravador de evidências passo a passo (EVIDENCE=1). */
   evidencia: EvidenceRecorder;
+  /** Registro de limpeza (teardown por runId) — executado ao fim do teste. */
+  cleanup: CleanupRegistry;
 }
 
 export const test = base.extend<Fixtures>({
   runId: async ({}, use) => {
     await use(createRunId());
+  },
+  cleanup: async ({ runId }, use) => {
+    const registry = new CleanupRegistry(runId);
+    await use(registry);
+    // Teardown automático após o teste (erros viram avisos, não derrubam).
+    await registry.executar();
   },
   evidencia: async ({ page }, use) => {
     const info = base.info();

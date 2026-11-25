@@ -47,6 +47,9 @@ npm run trace            # abre o Trace Viewer
 
 Leia antes de implementar fluxos reais:
 
+- [`docs/QUICKSTART.md`](docs/QUICKSTART.md) — **do zero ao primeiro teste** (checklist)
+- [`docs/MULTI_SYSTEM.md`](docs/MULTI_SYSTEM.md) — **fluxos entre sistemas** (e-agro → servicenow → …)
+- [`docs/DOCUMENTACAO_E_POSTMAN.md`](docs/DOCUMENTACAO_E_POSTMAN.md) — documentar APIs + coleção Postman
 - [`.github/copilot-instructions.md`](.github/copilot-instructions.md) — regras do repo (Copilot)
 - [`docs/GUARDRAILS.md`](docs/GUARDRAILS.md) — regras duras + política de dependências
 - [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — arquitetura técnica
@@ -69,9 +72,11 @@ O fluxo é guiado por arquivos de IA do Copilot (pasta `.github/`):
   VS Code, Visual Studio, github.com e no Copilot coding agent.
 - **Regras por arquivo** — `.github/instructions/testes.instructions.md` aplica
   padrões ao editar `tests/**` e `src/**` (VS Code).
-- **Comandos** — no Copilot Chat (VS Code), use `/eagro`, `/auth`,
-  `/nova-feature`, `/explorar`, `/gerar-teste`, `/evidencias`
+- **Comandos** — no Copilot Chat (VS Code), use os slash commands do fluxo:
+  `/eagro` (índice), `/doctor`, `/auth`, `/scaffold`, `/explorar`,
+  `/nova-feature`, `/gerar-teste`, `/evidencias`, `/postman`
   (arquivos em `.github/prompts/`). Habilite `chat.promptFiles` no VS Code.
+  Lista completa e descrição: [`docs/COMMANDS.md`](docs/COMMANDS.md).
 
 > Os guardrails **executáveis** (`npm run check`: typecheck + dependências +
 > anti-padrões) independem da IA e devem rodar no CI — são a garantia real.

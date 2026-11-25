@@ -50,6 +50,27 @@ Para mapear jornadas de criação (usuário, pedido, imóvel), o exploratório
   [ONBOARDING_HOMOLOG.md](ONBOARDING_HOMOLOG.md)).
 - Produção permanece **estritamente read-only**.
 
+## Teardown por runId (limpeza)
+
+A fixture `cleanup` (`src/fixtures/cleanup.ts`) limpa os dados criados ao final
+de cada teste:
+
+```ts
+test('cria e limpa @CT-xxx', async ({ cleanup, cprApi }) => {
+  const id = await cprApi.criarCliente(makeCliente({ runId }));
+  cleanup.registrar(`cliente ${id}`, () => cprApi.excluirCliente(id));
+  // ... teste ...
+}); // ao terminar, o cleanup roda em ordem inversa (LIFO)
+```
+
+- **LIFO**: limpa na ordem inversa da criação (respeita dependências:
+  pedido → imóvel → cliente).
+- **Falha de limpeza não derruba o teste** — vira aviso com o `runId`, para
+  rastrear órfãos.
+- **Sem API de limpeza?** Use `cleanup.apenasRegistrar('<recurso>')` para deixar
+  o rastro do órfão (identificável pelo runId). Não assuma teardown que não
+  exista — confirme as rotas de exclusão no exploratório.
+
 ## Operações financeiras
 
 Nenhuma operação financeira destrutiva ou mutação de dados reais sem
